@@ -1,3 +1,5 @@
+Question 1: Analyzing the three 'famous' pathogenic coronaviruses
+________________________________________________________________________________________________________________________
 mkdir finalproj # Made folder
 mkdir FASTAs 
 
@@ -60,3 +62,46 @@ for FILENAME in *.ctg.fa; do printf '%s\n' "$(cat < "$FILENAME")"; done > corona
 
 # Ran MAFFT to align the sequences
 mafft --reorder --localpair coronaviruses.fasta > final.aln
+
+# Transferred final.aln onto local machine, uploaded to MView (https://www.ebi.ac.uk/Tools/msa/mview/) with settings DNA (other default).
+
+________________________________________________________________________________________________________________________
+
+Question 2: Comparing SARS-CoV-2 isolates from different regions
+________________________________________________________________________________________________________________________
+
+# First step is to make a new 'master' SARS-CoV-2 genome assembly from as many published sequences as reasonably possible. The first 100 sequences filed under the search keyword "SARS-CoV-2" were downloaded from the ENA in a combined FASTA file.
+
+mkdir finalproj2
+cd finalproj2
+mkdir FASTAs
+# Uploaded FASTA file using Filezilla
+mkdir assemblies
+cd assemblies
+
+# Installed wtdbg2
+git clone https://github.com/ruanjue/wtdbg2
+cd wtdbg2 && make
+
+# Assembled the 'master' genome
+./wtdbg2/wtdbg2 -i ~/finalproj2/FASTAs/SARS-CoV-2_ENA.fasta -fo COV2_MASTER
+./wtdbg2/wtpoa-cns -i COV2_MASTER.ctg.lay.gz -fo COV2_MASTER.ctg.fa
+
+# Downloaded FASTAs from several geographical locations, sourced from the same sequences that creased the 'master' genome
+## HONG KONG  : MT215195.1
+## CHINA      : MT415840.1
+## SPAIN      : MT198651.1
+## JAPAN      : LC534419.1
+## USA:WA     : MT163717.1
+## USA:FL     : MT422807.1
+## BRAZIL     : MT126808.1
+## PERU       : MT263074.1
+## ITALY      : MT077125.1
+## TAIWAN     : MT374109.1
+## INDIA      : MT429168.1
+## NIGERIA    : MT159778.1
+## KAZAKHSTAN : MT428552.1
+
+## CANINE HOST, HONG KONG : MT270814.1
+## TIGER HOST , USA:NY    : MT365033.1
+
