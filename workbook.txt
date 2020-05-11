@@ -1,7 +1,62 @@
-05/10/2020
-
 mkdir finalproj # Made folder
+mkdir FASTAs 
 
-# Downloaded the following FASTA files from NCBI:
+# Downloaded the following FASTA files from NCBI in separate named folders:
 ## SARS-CoV-2: MT163716.1, MT126808.1, MT233520.1
-## SARS-CoV  : AY278554.2, AY282752, 
+## SARS-CoV  : AY278554.2, AY282752, AY283794
+## MERS-CoV  : MN723543, MN723542, MN723544
+# Transferred files to server with FileZilla, resulting in filestrucutre "~/finalproj/FASTAs/$virus_name/$accessionNum"
+
+cd FASTAs
+
+# FASTA files that were downloaded had linebreaks, we don't like that!
+# Ran script to put the sequences all on one line, and print to a new file with the suffix "_fx" to indicate fixed.
+for FILENAME in */*.fasta; do awk '{if(NR==1) {print $0} else {if($0 ~ /^>/) {print "\n"$0} else {printf $0}}}' "$FILENAME" > "$(echo "$FILENAME" | cut -d'.' -f 1)""_fx.fasta"; done
+
+# Concatenated the FASTAs
+cat MERS-CoV/*_fx.fasta > MERS-CoV.fasta
+cat SARS-CoV/*_fx.fasta > SARS-CoV.fasta
+cat SARS-CoV-2/*_fx.fasta > SARS-CoV-2.fasta
+
+mkdir assemblies
+cd assemblies
+
+# Installed wtdbg2
+git clone https://github.com/ruanjue/wtdbg2
+cd wtdbg2 && make
+
+# Running wtdbg2 to assemble the isolates
+./wtdbg2/wtdbg2 -i ~/finalproj/FASTAs/MERS-CoV.fasta -fo MERS-CoV
+## Error! It only detected one of the sequences within the joint fasta file. Opening the file with "more MERS-CoV.fasta" reveals that "cat" didn't insert a newline between each file, so it just detected one massive sequence. We'll have to fix that.
+
+cd ~/finalproj/FASTAs
+rm MERS-CoV.fasta
+rm SARS-CoV.fasta
+rm SARS-CoV-2.fasta
+
+#Concatenating the files with an inserted new line at the end
+for FILENAME in MERS-CoV/*_fx.fasta; do printf '%s\n' "$(cat < "$FILENAME")"; done > MERS_CoV.fasta 
+for FILENAME in SARS-CoV/*_fx.fasta; do printf '%s\n' "$(cat < "$FILENAME")"; done > SARS_CoV.fasta 
+for FILENAME in SARS-CoV-2/*_fx.fasta; do printf '%s\n' "$(cat < "$FILENAME")"; done > SARS_CoV-2.fasta 
+cd ..
+cd assemblies
+
+#Trying wtdbg2 again...
+./wtdbg2/wtdbg2 -i ~/finalproj/FASTAs/MERS-CoV.fasta -fo MERS-CoV
+./wtdbg2/wtdbg2 -i ~/finalproj/FASTAs/SARS-CoV.fasta -fo SARS-CoV
+./wtdbg2/wtdbg2 -i ~/finalproj/FASTAs/SARS-CoV-2.fasta -fo SARS-CoV-2
+# Worked this time. Using the Consenser.
+./wtdbg2/wtpoa-cns -i MERS-CoV.ctg.lay.gz -fo MERS-CoV.ctg.fa 
+./wtdbg2/wtpoa-cns -i SARS-CoV.ctg.lay.gz -fo SARS-CoV.ctg.fa 
+./wtdbg2/wtpoa-cns -i SARS-CoV-2.ctg.lay.gz -fo SARS-CoV-2.ctg.fa 
+
+cd ..
+mkdir alignments
+cd alignments
+
+# Went into the files and changed the headers to the virus name, rather than "ctg1." This was done in Nano using "nano file_name.ctg.fa"
+# Concatenated the files for MAFFT
+for FILENAME in *.ctg.fa; do printf '%s\n' "$(cat < "$FILENAME")"; done > coronaviruses.fasta 
+
+# Ran MAFFT to align the sequences
+mafft --reorder --localpair coronaviruses.fasta > final.aln
