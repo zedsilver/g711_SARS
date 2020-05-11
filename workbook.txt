@@ -1,1 +1,7 @@
 05/10/2020
+
+mkdir finalproj # Made folder
+
+# Downloaded the following FASTA files from NCBI:
+## SARS-CoV-2: MT163716.1, MT126808.1, MT233520.1
+## SARS-CoV  : AY278554.2, AY282752, 
