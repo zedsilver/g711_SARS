@@ -63,7 +63,7 @@ for FILENAME in *.ctg.fa; do printf '%s\n' "$(cat < "$FILENAME")"; done > corona
 # Ran MAFFT to align the sequences
 mafft --reorder --localpair coronaviruses.fasta > final.aln
 
-# Transferred final.aln onto local machine, uploaded to MView (https://www.ebi.ac.uk/Tools/msa/mview/) with settings DNA (other default).
+# Transferred final.aln onto local machine, uploaded to MView (https://www.ebi.ac.uk/Tools/msa/mview/) with settings DNA (other settings default).
 
 ________________________________________________________________________________________________________________________
 
@@ -89,7 +89,7 @@ cd wtdbg2 && make
 
 # Downloaded FASTAs from several geographical locations, sourced from the same sequences that creased the 'master' genome
 ## HONG KONG  : MT215195.1
-## CHINA      : MT415840.1
+## CHINA      : MT415840.1 ## Partial gene for ORF8 protein
 ## SPAIN      : MT198651.1
 ## JAPAN      : LC534419.1
 ## USA:WA     : MT163717.1
@@ -99,9 +99,25 @@ cd wtdbg2 && make
 ## ITALY      : MT077125.1
 ## TAIWAN     : MT374109.1
 ## INDIA      : MT429168.1
-## NIGERIA    : MT159778.1
+## NIGERIA    : MT159778.1 ## Partial Gene for ORF1ab polyprotein
 ## KAZAKHSTAN : MT428552.1
-
+# Found interesting isolates...
 ## CANINE HOST, HONG KONG : MT270814.1
 ## TIGER HOST , USA:NY    : MT365033.1
+# Sequence headers manually re-labeled to ">ASCESSIONNUM|LOCATION" and in special cases, ">ACESSIONUM|LOCATION,PROTEIN/HOST"
+# Uploaded to server into FASTAs folder
+
+# Concatenated geographical isolates and "master" sequence.
+cat *.fasta > geoisolates.fasta
+cat geoisolates.fasta ../assemblies/COV2_MASTER.ctg.fa > q2cov.fasta
+
+mkdir alignments
+cd alignments
+
+# Aligned the sequences
+mafft --reorder --localpair ../FASTAs/q2cov.fasta > q2final.aln
+
+# Transferred q2final.aln onto local machine, uploaded to MView (https://www.ebi.ac.uk/Tools/msa/mview/) with settings DNA (other settings default).
+
+
 
