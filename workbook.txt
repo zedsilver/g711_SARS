@@ -119,5 +119,15 @@ mafft --reorder --localpair ../FASTAs/q2cov.fasta > q2final.aln
 
 # Transferred q2final.aln onto local machine, uploaded to MView (https://www.ebi.ac.uk/Tools/msa/mview/) with settings DNA (other settings default).
 
+# Created phylogenomic tree model
+# Aligned just the geoislolates
+mkdir align2
+cd align2
+cp ../FASTAs/geoisolates.fasta ../align2/
+mafft --reorder --localpair geoisolates.fasta > geoisolates.aln
+iqtree -s geoisolates.aln -bb 1000 -st DNA -pre geoTree
+
+# Transferred geoTree.contree to local machine, loaded into FigTree.
+
 
 
