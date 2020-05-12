@@ -125,7 +125,7 @@ mkdir align2
 cd align2
 cp ../FASTAs/geoisolates.fasta ../align2/
 mafft --reorder --localpair geoisolates.fasta > geoisolates.aln
-iqtree -s geoisolates.aln -bb 1000 -st DNA -pre geoTree
+iqtree -s geoisolates.aln -bb 10000 -st DNA -pre geoTree
 
 # Transferred geoTree.contree to local machine, loaded into FigTree.
 
