@@ -13,7 +13,7 @@ cd FASTAs
 
 # FASTA files that were downloaded had linebreaks, we don't like that!
 # Ran script to put the sequences all on one line, and print to a new file with the suffix "_fx" to indicate fixed.
-for FILENAME in */*.fasta; do awk '{if(NR==1) {print $0} else {if($0 ~ /^>/) {print "\n"$0} else {printf $0}}}' "$FILENAME" > "$(echo "$FILENAME" | cut -d'.' -f 1)""_fx.fasta"; done
+for FILENAME in *.fasta; do awk '{if(NR==1) {print $0} else {if($0 ~ /^>/) {print "\n"$0} else {printf $0}}}' "$FILENAME" > "$(echo "$FILENAME" | cut -d'.' -f 1)""_fx.fasta"; done
 
 # Concatenated the FASTAs
 cat MERS-CoV/*_fx.fasta > MERS-CoV.fasta
@@ -130,6 +130,26 @@ mafft --reorder --localpair geoisolates.fasta > geoisolates.aln
 iqtree -s geoisolates.aln -bb 10000 -st DNA -pre geoTree
 
 # Transferred geoTree.contree to local machine, loaded into FigTree.
+
+# Wanted to do another alignment, including the SARS-CoV, MERS, and all SARS-CoV-2 isolates
+cd ..
+mkdir align3
+cd align3
+cat ~/finalproj/alignments/MERS-CoV.ctg.fa ~/finalproj/alignments/SARS-CoV.ctg.fa > twoViruses.fasta
+cd ..
+mkdir FASTA2 # Copying files over
+cp FASTAs/MT* FASTA2/ 
+cp FASTAs/LC* FASTA2/
+for FILENAME in *.fasta; do awk '{if(NR==1) {print $0} else {if($0 ~ /^>/) {print "\n"$0} else {printf $0}}}' "$FILENAME" > "$(echo "$FILENAME" | cut -d'.' -f 1)""_fx.fasta"; done
+for FILENAME in *_fx.fasta; do printf '%s\n' "$(cat < "$FILENAME")"; done > geoIsolates.fasta
+cp geoIsolates.fasta ../align3/
+cd ..
+cd align3
+cat geoIsolates.fasta twoViruses.fasta > allSamples.fasta
+mafft --reorder --localpair allSamples.fasta > allSamples.aln
+iqtree -s allSamples.aln -bb 10000 -st DNA -pre allSamps
+
+
 
 
 
