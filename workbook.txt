@@ -70,7 +70,7 @@ ________________________________________________________________________________
 Question 2: Comparing SARS-CoV-2 isolates from different regions
 ________________________________________________________________________________________________________________________
 
-# First step is to make a new 'master' SARS-CoV-2 genome assembly from as many published sequences as reasonably possible. The first 100 sequences filed under the search keyword "SARS-CoV-2" were downloaded from the ENA in a combined FASTA file.
+# First step is to make a new 'conensus' SARS-CoV-2 genome assembly from as many published sequences as reasonably possible. The first 100 sequences filed under the search keyword "SARS-CoV-2" were downloaded from the ENA in a combined FASTA file.
 
 mkdir finalproj2
 cd finalproj2
@@ -83,11 +83,11 @@ cd assemblies
 git clone https://github.com/ruanjue/wtdbg2
 cd wtdbg2 && make
 
-# Assembled the 'master' genome
+# Assembled the 'consensus' genome
 ./wtdbg2/wtdbg2 -i ~/finalproj2/FASTAs/SARS-CoV-2_ENA.fasta -fo COV2_MASTER
 ./wtdbg2/wtpoa-cns -i COV2_MASTER.ctg.lay.gz -fo COV2_MASTER.ctg.fa
 
-# Downloaded FASTAs from several geographical locations, sourced from the same sequences that creased the 'master' genome
+# Downloaded FASTAs from several geographical locations, sourced from the same sequences that creased the 'census' genome
 ## HONG KONG  : MT215195.1
 ## CHINA      : MT415840.1 ## Partial gene for ORF8 protein
 ## SPAIN      : MT198651.1
@@ -107,7 +107,7 @@ cd wtdbg2 && make
 # Sequence headers manually re-labeled to ">ASCESSIONNUM|LOCATION" and in special cases, ">ACESSIONUM|LOCATION,PROTEIN/HOST"
 # Uploaded to server into FASTAs folder
 
-# Concatenated geographical isolates and "master" sequence.
+# Concatenated geographical isolates and "consensus" sequence.
 cat *.fasta > geoisolates.fasta
 cat geoisolates.fasta ../assemblies/COV2_MASTER.ctg.fa > q2cov.fasta
 
