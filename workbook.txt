@@ -65,6 +65,8 @@ mafft --reorder --localpair coronaviruses.fasta > final.aln
 
 # Transferred final.aln onto local machine, uploaded to MView (https://www.ebi.ac.uk/Tools/msa/mview/) with settings DNA (other settings default).
 
+# Created phylogenetic tree model
+iqtree -s final.aln -bb 10000 -st DNA -pre coronavirusesTree
 ________________________________________________________________________________________________________________________
 
 Question 2: Comparing SARS-CoV-2 isolates from different regions
